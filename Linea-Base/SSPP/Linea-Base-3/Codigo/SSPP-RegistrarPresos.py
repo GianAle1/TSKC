@@ -102,13 +102,13 @@ ventana = Tk()
 ventana.title("SSPP - Registrar Presos")
 ventana.geometry("1360x760")
 
-imagen_fondo = Image.open("imagenes\puertaCelda.jpg")
+imagen_fondo = Image.open("Desarrollo/SSPP/Codigo/imagenes/puertaCelda.jpg")
 imagen_fondo = imagen_fondo.resize((1366, 768), Image.LANCZOS)
 imagen_fondo = imagen_fondo.filter(ImageFilter.BLUR)
 imagen_fondo = ImageTk.PhotoImage(imagen_fondo)
 
 # Cargar la imagen representativa
-imagen_registrarpresos = Image.open("imagenes\RegistrarPresos.png")
+imagen_registrarpresos = Image.open("Desarrollo/SSPP/Codigo/imagenes/RegistrarPresos.png")
 imagen_registrarpresos = imagen_registrarpresos.resize((380, 380), Image.LANCZOS)
 imagen_registrarpresos = ImageTk.PhotoImage(imagen_registrarpresos)
 

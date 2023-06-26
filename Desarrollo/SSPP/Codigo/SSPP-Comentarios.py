@@ -53,27 +53,12 @@ def mostrar_taller():
     entrada_apellido = Entry(frame_derecho, state="readonly", font=("Arial", 12), width=30)
     entrada_apellido.pack(pady=(0, 20))
 
-    # Etiqueta y combobox para seleccionar el taller
-    label_taller = Label(frame_derecho, text="Ingrese taller:", font=("Arial", 12))
-    label_taller.pack(pady=(20, 5))  # Ajustar el relleno vertical
+    # Etiqueta y campo de texto para ingresar el comentario del recluso
+    label_comentario = Label(frame_derecho, text="Comentario:", font=("Arial", 12))
+    label_comentario.pack(pady=(20, 5))  # Ajustar el relleno vertical
 
-    combobox_taller = ttk.Combobox(frame_derecho, state="readonly", font=("Arial", 12))
-    combobox_taller.pack(pady=(0, 20))
-
-    # Obtener los nombres de los talleres y mostrarlos en el combobox
-    conn = pyodbc.connect(
-        f"Driver={DB_DRIVER};"
-        f"Server={DB_SERVER};"
-        f"Database={DB_DATABASE};"
-        f"UID={DB_USERNAME};"
-        f"PWD={DB_PASSWORD};"
-    )
-    cursor = conn.cursor()
-    cursor.execute("SELECT Nombre FROM Curso")
-    nombres_talleres = [row[0] for row in cursor.fetchall()]
-    conn.close()
-
-    combobox_taller["values"] = nombres_talleres
+    entrada_comentario = Entry(frame_derecho, font=("Arial", 12))
+    entrada_comentario.pack(pady=(0, 20))
 
     def actualizar_recluso(event=None):
         codigo = entrada_codigo.get()
@@ -103,9 +88,9 @@ def mostrar_taller():
 
     entrada_codigo.bind("<Return>", actualizar_recluso)
 
-    def guardar_taller():
+    def guardar_comentario():
         codigo = entrada_codigo.get()
-        nombre_taller = combobox_taller.get()
+        comentario = entrada_comentario.get()
 
         conn = pyodbc.connect(
             f"Driver={DB_DRIVER};"
@@ -116,27 +101,19 @@ def mostrar_taller():
         )
         cursor = conn.cursor()
         
-        # Obtener el código del taller basado en su nombre
-        cursor.execute("SELECT Cod_curso FROM Curso WHERE Nombre=?", (nombre_taller,))
-        resultado = cursor.fetchone()
-        if resultado:
-            codigo_taller = resultado[0]
+        # Actualizar el comentario del recluso en la tabla Recluso
+        cursor.execute("UPDATE Recluso SET Comentario=? WHERE Cod_recluso=?", (comentario, codigo))
+        conn.commit()
+        conn.close()
 
-            # Actualizar el código del taller para el recluso en la tabla Recluso
-            cursor.execute("UPDATE Recluso SET Cod_curso=? WHERE Cod_recluso=?", (codigo_taller, codigo))
-            conn.commit()
-            conn.close()
+        messagebox.showinfo("Comentario actualizado", "El comentario se ha actualizado correctamente.")
 
-            messagebox.showinfo("Taller actualizado", "El taller se ha actualizado correctamente.")
-        else:
-            messagebox.showwarning("Taller no encontrado", "El taller seleccionado no existe.")
-
-    boton_guardar_taller = Button(frame_derecho, text="Guardar Taller", command=guardar_taller, font=("Arial", 12))
-    boton_guardar_taller.pack(pady=20)  # Ajustar el relleno vertical
+    boton_guardar_comentario = Button(frame_derecho, text="Guardar Comentario", command=guardar_comentario, font=("Arial", 12))
+    boton_guardar_comentario.pack(pady=20)  # Ajustar el relleno vertical
 
 # Crear la ventana principal
 ventana = Tk()
-ventana.title("SSPP - Modificar Talleres")
+ventana.title("SSPP - Modificar Comentarios")
 ventana.geometry("1200x720")
 
 # Creación de los marcos
@@ -152,15 +129,3 @@ mostrar_taller()
 
 # Ejecutar el bucle principal de la ventana
 ventana.mainloop()
-
-
-
-
-
-
-
-
-
-
-
-

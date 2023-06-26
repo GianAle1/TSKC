@@ -53,14 +53,14 @@ def mostrar_taller():
     entrada_apellido = Entry(frame_derecho, state="readonly", font=("Arial", 12), width=30)
     entrada_apellido.pack(pady=(0, 20))
 
-    # Etiqueta y combobox para seleccionar el taller
-    label_taller = Label(frame_derecho, text="Ingrese taller:", font=("Arial", 12))
-    label_taller.pack(pady=(20, 5))  # Ajustar el relleno vertical
+    # Etiqueta y combobox para seleccionar la conducta
+    label_conducta = Label(frame_derecho, text="Conducta:", font=("Arial", 12))
+    label_conducta.pack(pady=(20, 5))  # Ajustar el relleno vertical
 
-    combobox_taller = ttk.Combobox(frame_derecho, state="readonly", font=("Arial", 12))
-    combobox_taller.pack(pady=(0, 20))
+    combobox_conducta = ttk.Combobox(frame_derecho, state="readonly", font=("Arial", 12))
+    combobox_conducta.pack(pady=(0, 20))
 
-    # Obtener los nombres de los talleres y mostrarlos en el combobox
+    # Obtener los nombres de conducta y mostrarlos en el combobox
     conn = pyodbc.connect(
         f"Driver={DB_DRIVER};"
         f"Server={DB_SERVER};"
@@ -69,11 +69,11 @@ def mostrar_taller():
         f"PWD={DB_PASSWORD};"
     )
     cursor = conn.cursor()
-    cursor.execute("SELECT Nombre FROM Curso")
-    nombres_talleres = [row[0] for row in cursor.fetchall()]
+    cursor.execute("SELECT Nombre FROM Conducta")
+    nombres_conducta = [row[0] for row in cursor.fetchall()]
     conn.close()
 
-    combobox_taller["values"] = nombres_talleres
+    combobox_conducta["values"] = nombres_conducta
 
     def actualizar_recluso(event=None):
         codigo = entrada_codigo.get()
@@ -103,9 +103,19 @@ def mostrar_taller():
 
     entrada_codigo.bind("<Return>", actualizar_recluso)
 
-    def guardar_taller():
+    def guardar_perfil_psicologico():
         codigo = entrada_codigo.get()
-        nombre_taller = combobox_taller.get()
+        nombre_conducta = combobox_conducta.get()
+        peligrosidad = entrada_peligrosidad.get()
+
+        if not peligrosidad.isdigit():
+            messagebox.showerror("Error", "La peligrosidad debe ser un valor numérico.")
+            return
+
+        peligrosidad = int(peligrosidad)
+        if peligrosidad < 1 or peligrosidad > 10:
+            messagebox.showerror("Error", "La peligrosidad debe estar en el rango de 1 a 10.")
+            return
 
         conn = pyodbc.connect(
             f"Driver={DB_DRIVER};"
@@ -115,52 +125,46 @@ def mostrar_taller():
             f"PWD={DB_PASSWORD};"
         )
         cursor = conn.cursor()
-        
-        # Obtener el código del taller basado en su nombre
-        cursor.execute("SELECT Cod_curso FROM Curso WHERE Nombre=?", (nombre_taller,))
+
+        # Obtener el código de conducta basado en su nombre
+        cursor.execute("SELECT Cod_conducta FROM Conducta WHERE Nombre=?", (nombre_conducta,))
         resultado = cursor.fetchone()
         if resultado:
-            codigo_taller = resultado[0]
+            codigo_conducta = resultado[0]
 
-            # Actualizar el código del taller para el recluso en la tabla Recluso
-            cursor.execute("UPDATE Recluso SET Cod_curso=? WHERE Cod_recluso=?", (codigo_taller, codigo))
+            # Actualizar el código de conducta y la peligrosidad para el recluso en la tabla Recluso
+            cursor.execute("UPDATE Recluso SET Cod_conducta=?, Peligrosidad=? WHERE Cod_recluso=?", (codigo_conducta, peligrosidad, codigo))
             conn.commit()
             conn.close()
 
-            messagebox.showinfo("Taller actualizado", "El taller se ha actualizado correctamente.")
+            messagebox.showinfo("Perfil Psicológico actualizado", "El perfil psicológico se ha actualizado correctamente.")
         else:
-            messagebox.showwarning("Taller no encontrado", "El taller seleccionado no existe.")
+            messagebox.showwarning("Conducta no encontrada", "La conducta seleccionada no existe.")
 
-    boton_guardar_taller = Button(frame_derecho, text="Guardar Taller", command=guardar_taller, font=("Arial", 12))
-    boton_guardar_taller.pack(pady=20)  # Ajustar el relleno vertical
+    # Etiqueta y campo de texto para ingresar la peligrosidad
+    label_peligrosidad = Label(frame_derecho, text="Peligrosidad:", font=("Arial", 12))
+    label_peligrosidad.pack(pady=(20, 5))  # Ajustar el relleno vertical
+
+    entrada_peligrosidad = Entry(frame_derecho, font=("Arial", 12), width=30)
+    entrada_peligrosidad.pack(pady=(0, 20))
+
+    boton_guardar = Button(frame_derecho, text="Guardar", font=("Arial", 12), command=guardar_perfil_psicologico)
+    boton_guardar.pack()
+
+    ventana.mainloop()
+
 
 # Crear la ventana principal
 ventana = Tk()
-ventana.title("SSPP - Modificar Talleres")
-ventana.geometry("1200x720")
+ventana.title("SSPP - Modificar Perfil Psicológico")
+ventana.geometry("1200x720")  # Establecer las dimensiones de la ventana
 
-# Creación de los marcos
-frame_izquierdo = Frame(ventana, width=600, height=720)
-frame_derecho = Frame(ventana, width=600, height=720)
-
-# Anclaje de los marcos a la izquierda y derecha de la ventana
+# Dividir la ventana en dos frames
+frame_izquierdo = Frame(ventana)
 frame_izquierdo.pack(side="left", fill="both", expand=True)
+
+frame_derecho = Frame(ventana)
 frame_derecho.pack(side="right", fill="both", expand=True)
 
-# Llamar a la función para mostrar los talleres
 mostrar_taller()
-
-# Ejecutar el bucle principal de la ventana
-ventana.mainloop()
-
-
-
-
-
-
-
-
-
-
-
 
