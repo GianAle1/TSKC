@@ -10,12 +10,13 @@ def abrir_ventana_registro():
     ventana.deiconify()  # Muestra la ventana principal nuevamente
 
 def abrir_ventana_visualizacion():
-    ventana.withdraw()  # Oculta la ventana actual
-    subprocess.call(["python", "SSPP-VisualizarPresos.py"]) 
-    ventana.deiconify()  # Muestra la ventana principal nuevamente
+    root = Tk()
+    root.wm_title("Consulta de presos")
+    app = Ventana(root) 
+    app.mainloop()
 
 def abrir_ventana_modificacion():
-    ventana.withdraw()  # Oculta la ventana actuala actuala actuala actuala actual
+    ventana.withdraw()  # Oculta la ventana actual
     subprocess.call(["python", "SSPP-ModificarPresos.py"]) 
     ventana.deiconify()  # Muestra la ventana principal nuevamente
 
@@ -28,7 +29,7 @@ ventana.title("Sistema de Seguimiento de Perfil de Presos")
 ventana.geometry("1360x760")
 
 # Cargar la imagen de fondo
-imagen_fondo = Image.open("imagenes\puertaCelda.jpg")
+imagen_fondo = Image.open("Desarrollo/SSPP/Codigo/imagenes/puertaCelda.jpg")
 imagen_fondo = imagen_fondo.resize((1360, 760), Image.LANCZOS)
 imagen_fondo = imagen_fondo.filter(ImageFilter.BLUR)
 imagen_fondo = ImageTk.PhotoImage(imagen_fondo)

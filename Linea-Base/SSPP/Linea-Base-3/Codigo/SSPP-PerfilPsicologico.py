@@ -60,16 +60,6 @@ def mostrar_taller():
     combobox_conducta = ttk.Combobox(frame_derecho, state="readonly", font=("Arial", 12))
     combobox_conducta.pack(pady=(0, 20))
 
-    # Etiqueta y campo de texto para ingresar la peligrosidad
-    label_peligrosidad = Label(frame_derecho, text="Peligrosidad:", font=("Arial", 12))
-    label_peligrosidad.pack(pady=(20, 5))  # Ajustar el relleno vertical
-
-    entrada_peligrosidad = Entry(frame_derecho, font=("Arial", 12), width=30)
-    entrada_peligrosidad.pack(pady=(0, 20))
-
-   
-
-
     # Obtener los nombres de conducta y mostrarlos en el combobox
     conn = pyodbc.connect(
         f"Driver={DB_DRIVER};"
@@ -127,10 +117,6 @@ def mostrar_taller():
             messagebox.showerror("Error", "La peligrosidad debe estar en el rango de 1 a 10.")
             return
 
-        if not nombre_conducta or not peligrosidad:
-            messagebox.showerror("Error", "Debe ingresar tanto la conducta como la peligrosidad.")
-            return
-
         conn = pyodbc.connect(
             f"Driver={DB_DRIVER};"
             f"Server={DB_SERVER};"
@@ -155,7 +141,13 @@ def mostrar_taller():
         else:
             messagebox.showwarning("Conducta no encontrada", "La conducta seleccionada no existe.")
 
-     # Botón para guardar el perfil psicológico
+    # Etiqueta y campo de texto para ingresar la peligrosidad
+    label_peligrosidad = Label(frame_derecho, text="Peligrosidad:", font=("Arial", 12))
+    label_peligrosidad.pack(pady=(20, 5))  # Ajustar el relleno vertical
+
+    entrada_peligrosidad = Entry(frame_derecho, font=("Arial", 12), width=30)
+    entrada_peligrosidad.pack(pady=(0, 20))
+
     boton_guardar = Button(frame_derecho, text="Guardar", font=("Arial", 12), command=guardar_perfil_psicologico)
     boton_guardar.pack()
 
@@ -175,5 +167,4 @@ frame_derecho = Frame(ventana)
 frame_derecho.pack(side="right", fill="both", expand=True)
 
 mostrar_taller()
-
 
