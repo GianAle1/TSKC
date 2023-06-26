@@ -15,7 +15,7 @@ def abrir_ventana_visualizacion():
     ventana.deiconify()  # Muestra la ventana principal nuevamente
 
 def abrir_ventana_modificacion():
-    ventana.withdraw()  # Oculta la ventana actual
+    ventana.withdraw()  # Oculta la ventana actuala actuala actuala actuala actual
     subprocess.call(["python", "SSPP-ModificarPresos.py"]) 
     ventana.deiconify()  # Muestra la ventana principal nuevamente
 
