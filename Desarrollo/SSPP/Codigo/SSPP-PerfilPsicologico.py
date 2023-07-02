@@ -165,7 +165,7 @@ def mostrar_taller():
 # Crear la ventana principal
 ventana = Tk()
 ventana.title("SSPP - Modificar Perfil Psicológico")
-ventana.geometry("1200x720")  # Establecer las dimensiones de la ventana
+ventana.geometry("1360x760")  # Establecer las dimensiones de la ventana
 
 # Dividir la ventana en dos frames
 frame_izquierdo = Frame(ventana)

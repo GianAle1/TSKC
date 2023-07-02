@@ -137,7 +137,7 @@ def mostrar_taller():
 # Crear la ventana principal
 ventana = Tk()
 ventana.title("SSPP - Modificar Talleres")
-ventana.geometry("1200x720")
+ventana.geometry("1360x760")
 
 # Creación de los marcos
 frame_izquierdo = Frame(ventana, width=600, height=720)
